@@ -5,9 +5,8 @@ const wb = xlsx.readFile("./Data.xlsx")
 
 const ws = wb.Sheets["Sheet1"]
 const data = xlsx.utils.sheet_to_json(ws);
-const matches = []
 
-let fullListOfResults = []
+let fullMatchesArray = []
 
 match()
 
@@ -15,6 +14,8 @@ function match() {
     let names = data.map(x => x.name);
     let spokenLs = data.map(x => x.spokenL);
     let desiredLs = data.map(x => x.desiredL);
+
+    let noMatchesArray = names
 
     for (let i = 0; i < data.length; i++) {
 
@@ -28,34 +29,43 @@ function match() {
                 let secondLoopDesiredL = desiredLs[i]
 
                 if ((firstLoopSpokenL == secondLoopDesiredL) && (firstLoopDesiredL == secondLoopSpokenL)){
-                    fullListOfResults[i] = [firstLoopPerson, secondLoopPerson]
-                }
+                    fullMatchesArray[i] = [firstLoopPerson, secondLoopPerson]
+
+                    noMatchesArray = noMatchesArray.filter(element => 
+                        (element != firstLoopPerson)&&(element!=secondLoopPerson))
+                } 
             }
-    } readFullListOfResults()
+    } readAllResults(noMatchesArray)
 }
     
 
-function readFullListOfResults() {
-    fullListOfResults.forEach((pair) => { 	
+function readAllResults(finalNonMatches) {
+    fullMatchesArray.forEach((pair) => { 	
         pair.sort()
     });
+        fullMatchesArray = fullMatchesArray.filter(function(element) {
+            return element !== undefined;
+        });
 
-    let alphabeticPairsListOfResults = fullListOfResults.filter(function(element) {
-        return element !== undefined;
-    });
-
-    for (let i = 0; i < alphabeticPairsListOfResults.length; i++) {
-        let stringPair = alphabeticPairsListOfResults[i].toString();
+    for (let i = 0; i < fullMatchesArray.length; i++) {
+        let stringPair = fullMatchesArray[i].toString();
         let formattedStringPair = stringPair.replace(","," and ");
-        alphabeticPairsListOfResults[i] = formattedStringPair
+        fullMatchesArray[i] = formattedStringPair
     }
-    let finalFullMatches =  [...new Set(alphabeticPairsListOfResults)];
-    displayResults(finalFullMatches)
+    let finalFullMatches =  [...new Set(fullMatchesArray)];
+
+    finalNonMatches = finalNonMatches.toString().replace(/,/g, 'n')
+    
+
+
+    displayResults(finalFullMatches, finalNonMatches)
 }
 
-function displayResults(fullMatches) {
-    let formattedFullMatches = 'Full matches: \n' + fullMatches.toString().replace(/,/g,'\n')
+function displayResults(fullMatches, nonMatches) {
+    let formattedFullMatches = 'Full matches: \n' + fullMatches.toString().replace(/,/g,'\n') 
+    //let formattedPartialMatches = '\n' + 'No full matches were found for: \n' + partialMatches + ' is a partial match'
+    let formattedNonMatches = '\n' + 'No matches were found for: \n' + nonMatches.toString()
     
-    let textResult =  formattedFullMatches
-    console.log(textResult)
+    let textResult =  formattedFullMatches + formattedNonMatches
+    //console.log(textResult)
 }
