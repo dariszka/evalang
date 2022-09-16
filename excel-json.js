@@ -13,32 +13,23 @@ match()
 
 function match() {
     let names = data.map(x => x.name);
-    let numbers = data.map(x => x.numbers);
     let spokenLs = data.map(x => x.spokenL);
     let desiredLs = data.map(x => x.desiredL);
 
     for (let i = 0; i < data.length; i++) {
 
         let firstLoopPerson = names[i]
-        let firstLoopPersonsNumber = numbers[i]
         let firstLoopSpokenL = spokenLs[i]
         let firstLoopDesiredL = desiredLs[i]
 
             for (let i = 0; i < spokenLs.length; i++) {
                 let secondLoopPerson = names[i]
-                let secondLoopPersonsNumber = numbers[i]
                 let secondLoopSpokenL = spokenLs[i]
                 let secondLoopDesiredL = desiredLs[i]
 
-                if (firstLoopSpokenL == secondLoopDesiredL) {
-                    matches[0] = firstLoopPerson
-
-                    if(firstLoopDesiredL == secondLoopSpokenL) {
-                        matches[1] = secondLoopPerson
-
-                        fullListOfResults[i] = [matches[0], matches[1]]
-                    }
-                }   
+                if ((firstLoopSpokenL == secondLoopDesiredL) && (firstLoopDesiredL == secondLoopSpokenL)){
+                    fullListOfResults[i] = [firstLoopPerson, secondLoopPerson]
+                }
             }
     } readFullListOfResults()
 }
